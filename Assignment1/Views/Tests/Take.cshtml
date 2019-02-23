@@ -1,0 +1,27 @@
+﻿@model Assignment1.Models.Test
+
+@{
+                /**/
+
+                ViewBag.Title = "Take";
+                Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>This is the @Model.name test</h1>
+
+@using (Html.BeginForm("Submit", "Tests", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    foreach (var p in Model.Questions)
+    {
+        <h3>@p.QuestionNumber @p.QuestionText</h3>
+
+        foreach (var t in p.Answers)
+        {
+            <p><input type="radio" name=@p.Id value=@t.Id class="option-input radio"> @t.Answer1</p>
+        }
+    }
+
+
+    <input type="submit" value="Save" class="btn btn-default" />
+}

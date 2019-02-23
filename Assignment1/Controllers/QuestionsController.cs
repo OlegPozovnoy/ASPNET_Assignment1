@@ -18,7 +18,7 @@ namespace Assignment1.Controllers
         public ActionResult Index()
         {
             var questions = db.Questions.Include(q => q.QuestionType).Include(q => q.Test);
-            return View(questions.ToList());
+            return View(questions.OrderBy(p => p.TestId).ThenBy( p => p.QuestionNumber).ToList());
         }
 
         // GET: Questions/Details/5

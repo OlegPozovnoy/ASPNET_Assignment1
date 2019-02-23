@@ -73,6 +73,7 @@ namespace Assignment1.Controllers
             return View(test);
         }
 
+
         // POST: Tests/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -87,6 +88,27 @@ namespace Assignment1.Controllers
                 return RedirectToAction("Index");
             }
             return View(test);
+        }
+
+        public ActionResult Take(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Test test = db.Tests.Find(id);
+            if (test == null)
+            {
+                return HttpNotFound();
+            }
+            return View(test);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Submit(string data) {
+            ViewBag.data = data;
+            return View();
         }
 
         // GET: Tests/Delete/5
