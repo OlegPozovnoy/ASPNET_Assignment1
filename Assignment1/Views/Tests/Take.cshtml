@@ -14,7 +14,7 @@
     @Html.AntiForgeryToken()
     foreach (var p in Model.Questions)
     {
-        <h3>@p.QuestionNumber @p.QuestionText</h3>
+        <h6>@p.QuestionNumber @p.QuestionText</h6>
 
         foreach (var t in p.Answers)
         {
@@ -22,6 +22,7 @@
         }
     }
 
+    @Html.Hidden("testId",@Model.Id);
 
     <input type="submit" value="Save" class="btn btn-default" />
 }

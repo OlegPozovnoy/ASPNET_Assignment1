@@ -106,9 +106,104 @@ namespace Assignment1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Submit(string data) {
-            ViewBag.data = data;
+        public ActionResult Submit(int testId) {
+
+            string testResultKey ="";
+
+            foreach (var key in HttpContext.Request.Form.AllKeys)
+            {
+
+                if (key.ToString().Equals("__RequestVerificationToken"))
+                {
+                    testResultKey = HttpContext.Request.Form[key];
+                    RecordTestAttemptToDB(testResultKey, HttpContext.User.Identity.Name, testId);
+                }
+                else if (key.Equals("testId") == false)
+                {
+
+                    RecorsAnswerToDB(testResultKey, Convert.ToInt32(key), Convert.ToInt32(HttpContext.Request.Form[key]));
+                }
+            }
+
+
+             Tuple<int,int> result =  CalculateResults(testResultKey);
+
+            ViewBag.Score = result.Item1;
+            ViewBag.MaxScore = result.Item2;
+
+            //db.Database.SqlQuery
+
+          //  ViewBag.data = result;
             return View();
+        }
+
+        private Tuple<int, int> CalculateResults(string attemptKey) {
+
+            string command = "update dbo.TestResultsAnswers " +
+                         "set score = A.Score " +
+                         "from dbo.Answers A " +
+                         "where A.Id = dbo.TestResultsAnswers.AnswerId " +
+                         "and TestResultsId = '" + attemptKey + "'";
+
+            db.Database.ExecuteSqlCommand(command);
+
+            command ="update dbo.TestResultsAnswers " +
+                            "set MaxScore = T.MaxScore " +
+                            "from " +
+                            "(select QuestionId, max(score) as MaxScore from dbo.Answers " +
+                            "group by QuestionId) T " +
+                            "where dbo.TestResultsAnswers.QuestionId = T.QuestionId " +
+                            "and TestResultsId = '" + attemptKey + "'";
+
+            db.Database.ExecuteSqlCommand(command);
+
+            command = "update dbo.TestResults " +
+                        "set Scored = T.Score, " +
+                        "MaxScore = T.MaxScore " +
+                        "from " +
+                        "(select sum(Score) as Score, sum(MaxScore) as MaxScore from TestResultsAnswers where TestResultsId = '" + attemptKey + "') T " +
+                        "where TestResultsId = '" + attemptKey + "' ";
+
+            db.Database.ExecuteSqlCommand(command);
+
+            command =   " select top 1 Scored, MaxScore from TestResults " +
+                        " where TestResultsId = 'test'";
+
+            // IEnumerable<Tuple<int,int>> data = db.Database.SqlQuery<Tuple<int, int>>(command);
+
+            command = " select top 1 Scored from TestResults " +
+                        " where TestResultsId = '" + attemptKey + "'";
+
+            int scored = db.Database.SqlQuery<int>(command).FirstOrDefault();
+            //var x = data.ToList();
+
+            command = " select top 1 MaxScore from TestResults " +
+            " where TestResultsId = '" + attemptKey + "'";
+
+            int maxscore = db.Database.SqlQuery<int>(command).FirstOrDefault(); ;
+            //var y = data.ToArray();
+
+            return new Tuple<int,int>(scored, maxscore);
+        }
+
+
+        private int RecorsAnswerToDB(string attemptKey, int questionKey, int answerKey) {
+            string command = "insert into [dbo].[TestResultsAnswers] ([TestResultsId], [QuestionId], [AnswerId], [Score], [MaxScore])" +
+	            "values('" + attemptKey + "'," + questionKey + "," + answerKey + ", null,null)"  ;
+
+            db.Database.ExecuteSqlCommand(command);
+
+            return 1;
+        }
+
+        private int RecordTestAttemptToDB(string attemptKey, string User, int testId) {
+
+            string command = "insert into dbo.TestResults(TestResultsId, StartTime, EndTime, [User], Scored, MaxScore, TestId) " +
+                "values('" + attemptKey + "', null, getdate(), '" + User + "', null, null, " + testId + ")";
+
+            db.Database.ExecuteSqlCommand(command);
+
+            return 1;
         }
 
         // GET: Tests/Delete/5
