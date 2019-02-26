@@ -29,6 +29,10 @@ namespace Assignment1.Models
         [Display(Name = "QuestionType")]
         public int QuestionTypeId { get; set; }
 
+        [StringLength(255)]
+        [Display(Name = "Image")]
+        public string Photo { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Answer> Answers { get; set; }
 

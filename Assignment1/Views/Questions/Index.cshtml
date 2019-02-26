@@ -27,6 +27,10 @@
         <th>
             @Html.DisplayNameFor(model => model.QuestionNumber)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Photo)
+        </th>
+
         <th></th>
     </tr>
 
@@ -46,6 +50,12 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.QuestionNumber)
+        </td>
+        <td>
+            @if (item.Photo != null)
+            {
+                <img src="~/Content/Images/@item.Photo" class="thumb" />
+            }
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |

@@ -22,6 +22,10 @@ namespace Assignment1.Models
         [Display(Name = "Score")]
         public double Score { get; set; }
 
+        [StringLength(255)]
+        [Display(Name = "Image")]
+        public string Photo { get; set; }
+
         public virtual Question Question { get; set; }
     }
 }

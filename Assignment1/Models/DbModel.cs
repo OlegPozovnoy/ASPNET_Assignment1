@@ -52,6 +52,15 @@ namespace Assignment1.Models
                 .HasMany(e => e.Questions)
                 .WithRequired(e => e.Test)
                 .WillCascadeOnDelete(false);
+
+
+            modelBuilder.Entity<Answer>()
+            .Property(e => e.Photo)
+            .IsUnicode(false);
+
+            modelBuilder.Entity<Question>()
+            .Property(e => e.Photo)
+            .IsUnicode(false);
         }
     }
 }

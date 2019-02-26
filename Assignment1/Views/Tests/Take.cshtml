@@ -15,11 +15,34 @@
     foreach (var p in Model.Questions)
     {
         <br/>
-        <h6>@p.QuestionNumber @p.QuestionText</h6>
+        <h6>
+            @p.QuestionNumber
+
+            @if (p.Photo != null)
+            {
+                <img src="~/Content/Images/@p.Photo" class="thumb" />
+            }
+            else
+            {
+                @p.QuestionText
+            }
+
+        </h6>
 
         foreach (var t in p.Answers)
         {
-            <p><input type="radio" name=@p.Id value=@t.Id class="option-input radio"> @t.Answer1</p>
+        <p>
+            <input type="radio" name=@p.Id value=@t.Id class="option-input radio">
+
+            @if (t.Photo != null)
+            {
+                <img src="~/Content/Images/@t.Photo" class="thumb" />
+            }
+            else
+            {
+            @t.Answer1
+            }
+        </p>
         }
     }
 

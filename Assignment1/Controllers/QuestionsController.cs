@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Assignment1.Models;
+using System.IO;
 
 namespace Assignment1.Controllers
 {
@@ -50,10 +51,27 @@ namespace Assignment1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,TestId,QuestionText,QuestionNumber,QuestionTypeId")] Question question)
+        public ActionResult Create([Bind(Include = "Id,TestId,QuestionText,QuestionNumber,QuestionTypeId,Photo")] Question question)
         {
             if (ModelState.IsValid)
             {
+
+                if (Request.Files != null)
+                {
+                    var file = Request.Files[0];
+
+                    if (file.FileName != null && file.ContentLength > 0)
+                    {
+                        // remove path from Edge uploads
+                        string fName = Path.GetFileName(file.FileName);
+
+                        string path = Server.MapPath("~/Content/Images/" + fName);
+                        file.SaveAs(path);
+                        question.Photo = fName;
+                    }
+                }
+
+
                 db.Questions.Add(question);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -86,10 +104,31 @@ namespace Assignment1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,TestId,QuestionText,QuestionNumber,QuestionTypeId")] Question question)
+        public ActionResult Edit([Bind(Include = "Id,TestId,QuestionText,QuestionNumber,QuestionTypeId,Photo")] Question question, String CurrentPhoto)
         {
             if (ModelState.IsValid)
             {
+                // check for a file upload
+                if (Request.Files != null)
+                {
+                    var file = Request.Files[0];
+
+                    if (file.FileName != null && file.ContentLength > 0)
+                    {
+                        // remove path from Edge uploads
+                        string fName = Path.GetFileName(file.FileName);
+
+                        string path = Server.MapPath("~/Content/Images/" + fName);
+                        file.SaveAs(path);
+                        question.Photo = fName;
+                    }
+                }
+                else
+                {
+                    // no new photo, keep the old file name
+                    question.Photo = CurrentPhoto;
+                }
+
                 db.Entry(question).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
