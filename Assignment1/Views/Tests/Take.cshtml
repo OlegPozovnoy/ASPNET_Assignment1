@@ -14,6 +14,7 @@
     @Html.AntiForgeryToken()
     foreach (var p in Model.Questions)
     {
+        <br/>
         <h6>@p.QuestionNumber @p.QuestionText</h6>
 
         foreach (var t in p.Answers)

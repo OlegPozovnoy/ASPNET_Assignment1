@@ -10,6 +10,7 @@ using Assignment1.Models;
 
 namespace Assignment1.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class QuestionsController : Controller
     {
         private DbModel db = new DbModel();

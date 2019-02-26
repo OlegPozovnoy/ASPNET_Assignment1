@@ -42,8 +42,13 @@
             @Html.DisplayFor(modelItem => item.Questions.Count)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })|
+            @if (User.IsInRole("admin")) { 
+            
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
+             
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            
+            }
             @Html.ActionLink("Take", "Take", new { id = item.Id })
         </td>
     </tr>

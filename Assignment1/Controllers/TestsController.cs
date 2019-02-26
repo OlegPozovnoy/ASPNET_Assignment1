@@ -10,6 +10,7 @@ using Assignment1.Models;
 
 namespace Assignment1.Controllers
 {
+    [Authorize]
     public class TestsController : Controller
     {
         private DbModel db = new DbModel();
@@ -36,6 +37,7 @@ namespace Assignment1.Controllers
         }
 
         // GET: Tests/Create
+        [Authorize (Roles = "admin")]
         public ActionResult Create()
         {
             return View();
@@ -46,6 +48,7 @@ namespace Assignment1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public ActionResult Create([Bind(Include = "Id,author,name,description")] Test test)
         {
             if (ModelState.IsValid)
@@ -59,6 +62,7 @@ namespace Assignment1.Controllers
         }
 
         // GET: Tests/Edit/5
+        [Authorize(Roles = "admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -79,6 +83,7 @@ namespace Assignment1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public ActionResult Edit([Bind(Include = "Id,author,name,description")] Test test)
         {
             if (ModelState.IsValid)
@@ -89,7 +94,7 @@ namespace Assignment1.Controllers
             }
             return View(test);
         }
-
+        [Authorize]
         public ActionResult Take(int? id)
         {
             if (id == null)
@@ -136,6 +141,7 @@ namespace Assignment1.Controllers
           //  ViewBag.data = result;
             return View();
         }
+
 
         private Tuple<int, int> CalculateResults(string attemptKey) {
 
@@ -207,6 +213,7 @@ namespace Assignment1.Controllers
         }
 
         // GET: Tests/Delete/5
+        [Authorize(Roles = "admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -224,6 +231,7 @@ namespace Assignment1.Controllers
         // POST: Tests/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public ActionResult DeleteConfirmed(int id)
         {
             Test test = db.Tests.Find(id);
@@ -231,7 +239,7 @@ namespace Assignment1.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
+        [Authorize(Roles = "admin")]
         protected override void Dispose(bool disposing)
         {
             if (disposing)
