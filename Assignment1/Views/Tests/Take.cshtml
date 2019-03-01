@@ -20,7 +20,11 @@
         <h6>
             @p.QuestionNumber
             <br/>
-            @p.QuestionText
+            @foreach (var line in @p.QuestionText.Trim().Split(new string[] { "<br/>"}, StringSplitOptions.None))
+            {
+                @line;
+                <br/>
+            }
             <br/>
             @if (p.Photo != null)
             {
@@ -33,14 +37,12 @@
         {
         <p>
             <input type="radio" name=@p.Id value=@t.Id class="option-input radio">
-
-            @t.Answer1
+            @t.Answer1.Trim() 
             <br/>
             @if (t.Photo != null)
             {
-                <img src="~/Content/Images/@t.Photo" class="thumb" />
+            <img src="~/Content/Images/@t.Photo" class="thumb" />
             }
-
         </p>
         }
     }
